@@ -53,6 +53,7 @@ output_init: "HeOrthogonal"
 logdir: "logs"
 dataset: "data/coll_v1.2_train.npz"
 val_dataset: "data/coll_v1.2_val.npz"
+test_dataset: "data/coll_v1.2_test.npz"
 num_train: 0 # derived from dataset
 num_val: 0 # derived from dataset
 
