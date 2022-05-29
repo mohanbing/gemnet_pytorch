@@ -214,7 +214,10 @@ for i in range(int(np.ceil(num_val / batch_size))):
     # predicted_tup, targets =  test_on_batch(test["dataset_iter"])
 
     inputs, targets = next(test["dataset_iter"])
-    energy, forces = model.predict(inputs)
+    inputs, targets = dict2device(inputs), dict2device(targets)
+    
+    with torch.no_grad():
+        energy, forces = model.predict(inputs)
 
     energy_mae = get_mae(targets["E"], energy)
     forces_mae = get_mae(targets["F"], forces)
