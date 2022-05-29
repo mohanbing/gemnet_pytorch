@@ -210,12 +210,14 @@ total_mae_energy = 0
 total_mae_forces = 0
 count = 0
 for i in range(int(np.ceil(num_val / batch_size))):
+    print("Idx: {}".format(i))
     predicted_tup, targets =  test_on_batch(test["dataset_iter"])
 
     energy, forces = predicted_tup
 
     energy_mae = get_mae(targets["E"], energy)
     forces_mae = get_mae(targets["F"], forces)
+    print("E: {}, F: {}, Idx: {}".format(energy_mae, forces_mae, i))
 
     total_mae_energy += energy_mae
     total_mae_forces += forces_mae
