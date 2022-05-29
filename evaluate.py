@@ -211,9 +211,10 @@ total_mae_forces = 0
 count = 0
 for i in range(int(np.ceil(num_val / batch_size))):
     print("Idx: {}".format(i))
-    predicted_tup, targets =  test_on_batch(test["dataset_iter"])
+    # predicted_tup, targets =  test_on_batch(test["dataset_iter"])
 
-    energy, forces = predicted_tup
+    inputs, targets = next(test["dataset_iter"])
+    energy, forces = model.predict(inputs)
 
     energy_mae = get_mae(targets["E"], energy)
     forces_mae = get_mae(targets["F"], forces)
