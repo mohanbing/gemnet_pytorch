@@ -86,23 +86,23 @@ class Molecule(DataContainer):
 
 # Model setup
 scale_file = "./scaling_factors.json"
-pytorch_weights_file = "./pretrained/best/model.pth"
+pytorch_weights_file = "/home/amohan2/gemnet_pytorch/saved_model/model_140.pth"
 # depends on GemNet model that is loaded
 triplets_only = False
 direct_forces = False
 cutoff = 5.0
 int_cutoff = 10.0
 
-# Data setup
-from ase.build import molecule as ase_molecule_db
+# # Data setup
+# from ase.build import molecule as ase_molecule_db
 
-mol = ase_molecule_db('C7NH5')
-R   = mol.get_positions()
-Z   = mol.get_atomic_numbers()
+# mol = ase_molecule_db('C7NH5')
+# R   = mol.get_positions()
+# Z   = mol.get_atomic_numbers()
 
-molecule = Molecule(
-    R, Z, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
-)
+# molecule = Molecule(
+#     R, Z, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
+# )
 
 model = GemNet(
     num_spherical=7,
@@ -130,10 +130,10 @@ model = GemNet(
 )
 model.load_weights(pytorch_weights_file)
 
-energy, forces = model.predict(molecule.get())
+# energy, forces = model.predict(molecule.get())
 
-print("Energy [eV]", energy)
-print("Forces [eV/°A]", forces)
+# print("Energy [eV]", energy)
+# print("Forces [eV/°A]", forces)
 
 
 with open('config.yaml', 'r') as c:
@@ -147,21 +147,26 @@ for key, val in config.items():
         except (ValueError, SyntaxError):
             pass
 
-test_dataset = config["test_dataset"]
-test_data_container = DataContainer(
-    test_dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
-)
+
 test = {}
 batch_size = 32
 data_seed = config["data_seed"]
 mve = config["mve"]
 
+if config["qm9"]:
+    test_dataset = config["qm9_dataset"]
+else:
+    test_dataset = config["test_dataset"]
+    
+test_data_container = DataContainer(
+    test_dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
+)
 num_val = len(test_data_container)
 logging.info(f"Test data size: {num_val}")
 test_data_provider = DataProvider(
     test_data_container,
     0,
-    num_val,
+    0,
     batch_size,
     seed=data_seed,
     shuffle=True,
@@ -170,20 +175,6 @@ test_data_provider = DataProvider(
 
 test["dataset_iter"] = test_data_provider.get_dataset("test")
 
-def predict(inputs):
-    energy, forces = model(inputs)
-
-    if mve:
-        mean_energy = energy[:, :1]
-        var_energy = torch.nn.functional.softplus(energy[:, 1:])
-        mean_forces = forces[:, 0, :]
-        var_forces = torch.nn.functional.softplus(forces[:, 1, :])
-        return mean_energy, var_energy, mean_forces, var_forces
-    else:
-        if len(forces.shape) == 3:
-            forces = forces[:, 0]
-        return energy, None, forces, None
-
 def dict2device(data, device=None):
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -191,20 +182,11 @@ def dict2device(data, device=None):
         data[key] = data[key].to(device)
     return data
 
-def get_mae(self, targets, pred):
+def get_mae(targets, pred):
     """
     Mean Absolute Error
     """
     return torch.nn.functional.l1_loss(pred, targets, reduction="mean")
-
-def test_on_batch(dataset_iter):
-    model.eval()
-    with torch.no_grad():
-        inputs, targets = next(dataset_iter)
-        # push to GPU if available
-        inputs, targets = dict2device(inputs), dict2device(targets)
-        energy, _, forces, _ = predict(inputs)
-    return (energy, forces), targets
 
 total_mae_energy = 0
 total_mae_forces = 0
@@ -214,10 +196,8 @@ for i in range(int(np.ceil(num_val / batch_size))):
     # predicted_tup, targets =  test_on_batch(test["dataset_iter"])
 
     inputs, targets = next(test["dataset_iter"])
-    inputs, targets = dict2device(inputs), dict2device(targets)
-    
-    with torch.no_grad():
-        energy, forces = model.predict(inputs)
+
+    energy, forces = model.predict(inputs)
 
     energy_mae = get_mae(targets["E"], energy)
     forces_mae = get_mae(targets["F"], forces)
