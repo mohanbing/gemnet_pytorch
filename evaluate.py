@@ -5,6 +5,8 @@ import torch
 import ast
 
 from gemnet.training.data_provider import DataProvider
+from qm9.qm_data_container import QmDataContainer
+from qm9.qm_data_provider import QmDataProvider
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 os.environ["AUTOGRAPH_VERBOSITY"] = "1"
 
@@ -155,14 +157,20 @@ mve = config["mve"]
 
 if config["qm9"]:
     test_dataset = config["qm9_dataset"]
+    test_data_container = QmDataContainer(
+        test_dataset, cutoff=cutoff
+    )
+    num_val = len(test_data_container)
+    logging.info(f"Test data size: {num_val}")
+
 else:
     test_dataset = config["test_dataset"]
-    
-test_data_container = DataContainer(
-    test_dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
-)
-num_val = len(test_data_container)
-logging.info(f"Test data size: {num_val}")
+    test_data_container = DataContainer(
+        test_dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
+    )
+    num_val = len(test_data_container)
+    logging.info(f"Test data size: {num_val}")
+
 test_data_provider = DataProvider(
     test_data_container,
     0,
@@ -197,10 +205,18 @@ for i in range(int(np.ceil(num_val / batch_size))):
 
     inputs, targets = next(test["dataset_iter"])
 
-    energy, forces = model.predict(inputs)
+    if config['qm9']:
+        energy, _ = model.predict(inputs)
+        energy_mae = get_mae(targets["U0"], energy)
+    else:
+        energy, forces = model.predict(inputs)
+        energy_mae = get_mae(targets["E"], energy)
+    
+    if config['qm9']:
+        forces = 0
+    else:
+        forces_mae = get_mae(targets["F"], forces)
 
-    energy_mae = get_mae(targets["E"], energy)
-    forces_mae = get_mae(targets["F"], forces)
     print("E: {}, F: {}, Idx: {}".format(energy_mae, forces_mae, i))
 
     total_mae_energy += energy_mae
