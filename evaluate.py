@@ -158,7 +158,7 @@ mve = config["mve"]
 if config["qm9"]:
     test_dataset = config["qm9_dataset"]
     test_data_container = QmDataContainer(
-        test_dataset, cutoff=cutoff
+        test_dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
     )
     num_val = len(test_data_container)
     logging.info(f"Test data size: {num_val}")
