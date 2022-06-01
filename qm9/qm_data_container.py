@@ -326,7 +326,7 @@ class QmDataContainer:
             id3_reduce_ca = id3_reduce_ca[idx_sorted]
             id3_expand_ba = id3_expand_ba[idx_sorted]
             _, K = np.unique(id3_reduce_ca, return_counts=True)
-            idx_data["Kidx3"] = DataContainer.ragged_range(
+            idx_data["Kidx3"] = QmDataContainer.ragged_range(
                 K
             )  # K = [1 4 2 3] -> Kidx3 = [0  0 1 2 3  0 1  0 1 2] , (nTriplets,)
         else:
@@ -375,7 +375,7 @@ class QmDataContainer:
 
             _, K = np.unique(id4_reduce_ca, return_counts=True)
             # K = [1 4 2 3] -> Kidx4 = [0  0 1 2 3  0 1  0 1 2]
-            idx_data["Kidx4"] = DataContainer.ragged_range(K)  # (nQuadruplets,)
+            idx_data["Kidx4"] = QmDataContainer.ragged_range(K)  # (nQuadruplets,)
         else:
             idx_data["Kidx4"] = np.array([], dtype="int32")
         # ------------------------------------------------------------------------------- #
@@ -442,7 +442,7 @@ class QmDataContainer:
 
         # each reduce edge (c->a) has to be repeated as often as there are neighbors for node b
         # vice verca for the edges of the source node (d->b) and node a
-        id4_reduce_cab = DataContainer.repeat_blocks(
+        id4_reduce_cab = QmDataContainer.repeat_blocks(
             nNeighbors_t, nNeighbors_s
         )  # (nQuadruplets,)
         id4_reduce_ca = id4_reduce_intm_ca[id4_reduce_cab]  # intmTriplets -> nQuadruplets

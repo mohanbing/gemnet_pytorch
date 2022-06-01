@@ -6,7 +6,6 @@ import ast
 
 from gemnet.training.data_provider import DataProvider
 from qm9.qm_data_container import QmDataContainer
-from qm9.qm_data_provider import QmDataProvider
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 os.environ["AUTOGRAPH_VERBOSITY"] = "1"
 
