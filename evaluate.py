@@ -199,6 +199,9 @@ total_mae_energy = 0
 total_mae_forces = 0
 count = 0
 for i in range(int(np.ceil(num_val / batch_size))):
+    if count == 10000:
+        break
+
     print("Idx: {}".format(i))
     # predicted_tup, targets =  test_on_batch(test["dataset_iter"])
 
@@ -212,7 +215,7 @@ for i in range(int(np.ceil(num_val / batch_size))):
         energy_mae = get_mae(targets["E"], energy)
     
     if config['qm9']:
-        forces = 0
+        forces_mae = 0
     else:
         forces_mae = get_mae(targets["F"], forces)
 
@@ -221,6 +224,7 @@ for i in range(int(np.ceil(num_val / batch_size))):
     total_mae_energy += energy_mae
     total_mae_forces += forces_mae
     count +=1
+    print("Average MAE for Energy: {}".format(total_mae_energy/count))
 
 print("Average MAE for Energy: {}".format(total_mae_energy/count))
 print("Average MAE for Forces: {}".format(total_mae_forces/count))

@@ -55,7 +55,7 @@ dataset: "data/coll_v1.2_train.npz"
 val_dataset: "data/coll_v1.2_val.npz"
 test_dataset: "data/coll_v1.2_test.npz" 
 qm9: True
-qm9_dataset: "qm9/qm9_eV.npz"
+qm9_dataset: "./qm9/qm9_eV.npz"
 num_train: 0 # derived from dataset
 num_val: 0 # derived from dataset
 

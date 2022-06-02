@@ -96,6 +96,14 @@ decay_rate = config["decay_rate"]
 staircase = config["staircase"]
 restart = config["restart"]
 comment = config["comment"]
+qm9 = config["qm9"]
+
+if qm9:
+    dataset = config["qm9_dataset"]
+    val_dataset = None
+    num_train = 100000
+    num_val = 10000
+
 
 torch.manual_seed(tfseed)
 
