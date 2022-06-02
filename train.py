@@ -189,6 +189,14 @@ model = GemNet(
     output_init=output_init,
     scale_file=scale_file,
 )
+
+for param in model.parameters():
+    param.requires_grad = False
+
+for i in range(len(model.out_blocks)):
+    for param in model.out_blocks[i].parameters():
+        param.requires_grad = True
+
 # push to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
