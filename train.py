@@ -304,12 +304,12 @@ if os.path.exists(log_path_model):
     model_checkpoint = torch.load(log_path_model)
     model.load_state_dict(model_checkpoint["model"])
 
-    train_checkpoint = torch.load(log_path_training)
-    trainer.load_state_dict(train_checkpoint["trainer"])
+    # train_checkpoint = torch.load(log_path_training)
+    # trainer.load_state_dict(train_checkpoint["trainer"])
     # restore the best saved results
     metrics_best.restore()
     logging.info(f"Restored best metrics: {metrics_best.loss}")
-    step_init = int(train_checkpoint["step"])
+    step_init = 0
 else:
     logging.info("Freshly initialize model")
     metrics_best.inititalize()
