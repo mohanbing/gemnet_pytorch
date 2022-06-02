@@ -18,6 +18,8 @@ from gemnet.training.data_provider import DataProvider
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
+from qm9.qm_data_container import QmDataContainer
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 os.environ["AUTOGRAPH_VERBOSITY"] = "1"
 
@@ -195,9 +197,14 @@ train = {}
 validation = {}
 
 logging.info("Load dataset")
-data_container = DataContainer(
-    dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
-)
+if qm9:
+    data_container = QmDataContainer(
+        dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
+    )
+else:
+    data_container = DataContainer(
+        dataset, cutoff=cutoff, int_cutoff=int_cutoff, triplets_only=triplets_only
+    )
 
 if val_dataset is not None:
     # Initialize DataProvider
