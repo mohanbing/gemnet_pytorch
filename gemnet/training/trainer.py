@@ -86,7 +86,7 @@ class Trainer:
                 "force_var",
             ]
         else:
-            self.tracked_metrics = ["loss", "energy_mae", "force_mae", "force_rmse"]
+            self.tracked_metrics = ["loss", "energy_mae"]
 
         self.reset_optimizer(
             learning_rate,
