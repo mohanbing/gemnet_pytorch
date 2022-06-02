@@ -385,13 +385,13 @@ class Trainer:
                     energy_var=var_energy,
                 )
                 # update atom metrics
-                metrics.update_state(
-                    nsamples=mean_forces.shape[0],
-                    force_mae=force_mae,
-                    force_rmse=force_rmse,
-                    force_nll=force_nll,
-                    force_var=var_forces,
-                )
+                # metrics.update_state(
+                #     nsamples=mean_forces.shape[0],
+                #     force_mae=force_mae,
+                #     force_rmse=force_rmse,
+                #     force_nll=force_nll,
+                #     force_var=var_forces,
+                # )
             else:
                 # update molecule metrics
                 metrics.update_state(
@@ -400,11 +400,11 @@ class Trainer:
                     energy_mae=energy_mae,
                 )
                 # update atom metrics
-                metrics.update_state(
-                    nsamples=mean_forces.shape[0],
-                    force_mae=force_mae,
-                    force_rmse=force_rmse,
-                )
+                # metrics.update_state(
+                #     nsamples=mean_forces.shape[0],
+                #     force_mae=force_mae,
+                #     force_rmse=force_rmse,
+                # )
 
         return loss
 
@@ -442,13 +442,13 @@ class Trainer:
                     energy_var=var_energy,
                 )
                 # update atom metrics
-                metrics.update_state(
-                    nsamples=mean_forces.shape[0],
-                    force_mae=force_mae,
-                    force_rmse=force_rmse,
-                    force_nll=force_nll,
-                    force_var=var_forces,
-                )
+                # metrics.update_state(
+                #     nsamples=mean_forces.shape[0],
+                #     force_mae=force_mae,
+                #     force_rmse=force_rmse,
+                #     force_nll=force_nll,
+                #     force_var=var_forces,
+                # )
 
             else:
                 force_metric = force_mae if self.loss == "mae" else force_rmse
@@ -461,11 +461,11 @@ class Trainer:
                     energy_mae=energy_mae,
                 )
                 # update atom metrics
-                metrics.update_state(
-                    nsamples=mean_forces.shape[0],
-                    force_mae=force_mae,
-                    force_rmse=force_rmse,
-                )
+                # metrics.update_state(
+                #     nsamples=mean_forces.shape[0],
+                #     force_mae=force_mae,
+                #     force_rmse=force_rmse,
+                # )
 
         return loss
 
