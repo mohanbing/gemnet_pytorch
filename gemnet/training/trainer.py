@@ -335,12 +335,12 @@ class Trainer:
             force_nll = self.get_nll(targets["F"], mean_forces, var_forces)
             loss = energy_nll * (1 - self.rho_force) + self.rho_force * force_nll
         else:
-            energy_mae = self.get_mae(targets["E"], mean_energy)
+            energy_mae = self.get_mae(targets["U0"], mean_energy)
             if self.loss == "mae":
-                force_metric = self.get_mae(targets["F"], mean_forces)
+                force_metric = 0
             else:
-                force_metric = self.get_rmse(targets["F"], mean_forces)
-            loss = energy_mae * (1 - self.rho_force) + self.rho_force * force_metric
+                force_metric = 0
+            loss = energy_mae * (1 - self.rho_force) + 0
 
         self.optimizers.zero_grad()
         loss.backward()
@@ -363,16 +363,16 @@ class Trainer:
         loss = loss.detach()
         with torch.no_grad():
             if self.mve:
-                energy_mae = self.get_mae(targets["E"], mean_energy)
-                force_mae = self.get_mae(targets["F"], mean_forces)
-                force_rmse = self.get_rmse(targets["F"], mean_forces)
+                energy_mae = self.get_mae(targets["U0"], mean_energy)
+                force_mae = 0
+                force_rmse = 0
 
             else:
                 if self.loss == "mae":
                     force_mae = force_metric
-                    force_rmse = self.get_rmse(targets["F"], mean_forces)
+                    force_rmse = 0
                 else:
-                    force_mae = self.get_mae(targets["F"], mean_forces)
+                    force_mae = 0
                     force_rmse = force_metric
 
             if self.mve:
@@ -423,9 +423,9 @@ class Trainer:
             mean_energy, var_energy, mean_forces, var_forces = self.predict(inputs)
 
         with torch.no_grad():
-            energy_mae = self.get_mae(targets["E"], mean_energy)
-            force_mae = self.get_mae(targets["F"], mean_forces)
-            force_rmse = self.get_rmse(targets["F"], mean_forces)
+            energy_mae = self.get_mae(targets["U0"], mean_energy)
+            force_mae = 0
+            force_rmse = 0
 
             if self.mve:
                 energy_nll = self.get_nll(targets["E"], mean_energy, var_energy)
