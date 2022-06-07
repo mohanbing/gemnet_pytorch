@@ -29,9 +29,9 @@ forces_coupled: False
 envelope_exponent: 5
 extensive: True
 
-rho_force: 0.999
+rho_force: 0.4
 ema_decay: 0.999
-weight_decay: 0.000002
+weight_decay: 0.0
 
 learning_rate: 0.001
 decay_steps: 4500000
@@ -43,7 +43,7 @@ decay_cooldown: 5
 agc: False
 grad_clip_max: 10.0
 
-restart: null
+restart: "/home/amohan2/testing/gemnet_pytorch/logs/20220524_175437_Eq8Fs6_coll_v1.2_train.npz_GemNet"
 tfseed: 1234
 data_seed: 42
 scale_file: "scaling_factors.json"
@@ -63,5 +63,5 @@ patience: 5
 evaluation_interval: 7500
 save_interval: 7500
 warmup_steps: 3750
-batch_size: 32
+batch_size: 8
 num_steps: 1500000

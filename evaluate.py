@@ -87,7 +87,7 @@ class Molecule(DataContainer):
 
 # Model setup
 scale_file = "./scaling_factors.json"
-pytorch_weights_file = "/home/amohan2/gemnet_pytorch/saved_model/model_140.pth"
+pytorch_weights_file = "/home/amohan2/testing/gemnet_pytorch/saved_model/qm9/model.pth"
 # depends on GemNet model that is loaded
 triplets_only = False
 direct_forces = False
@@ -129,7 +129,9 @@ model = GemNet(
     triplets_only=triplets_only,
     direct_forces=direct_forces,
 )
-model.load_weights(pytorch_weights_file)
+#model.load_weights(pytorch_weights_file)
+model_checkpoint = torch.load(pytorch_weights_file)
+model.load_state_dict(model_checkpoint["model"])
 
 # energy, forces = model.predict(molecule.get())
 
@@ -150,7 +152,7 @@ for key, val in config.items():
 
 
 test = {}
-batch_size = 32
+batch_size = 16
 data_seed = config["data_seed"]
 mve = config["mve"]
 
@@ -172,8 +174,8 @@ else:
 
 test_data_provider = DataProvider(
     test_data_container,
-    0,
-    0,
+    100000,
+    10000,
     batch_size,
     seed=data_seed,
     shuffle=True,
